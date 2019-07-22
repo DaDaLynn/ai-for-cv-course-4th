@@ -2,13 +2,14 @@
 ###############################
 import numpy as np
 import random
+import matplotlib.pyplot as plt
 
 def inference(w, b, x):        # inference, test, predict, same thing. Run model after training
     pred_y = w * x + b
     return pred_y
 
 def eval_loss(w, b, x_list, gt_y_list):
-    avg_loss = sum(list(map(lambda x, y: 0.5 * (w * x + b - y)**2), x_list, gt_y_list))
+    avg_loss = sum(list(map(lambda x, y: 0.5 * (w * x + b - y)**2, x_list, gt_y_list)))
     avg_loss /= len(gt_y_list)
     return avg_loss
 
@@ -43,8 +44,9 @@ def train(x_list, gt_y_list, batch_size, lr, max_iter):
         batch_x = [x_list[j] for j in batch_idxs]
         batch_y = [gt_y_list[j] for j in batch_idxs]
         w, b = cal_step_gradient(batch_x, batch_y, w, b, lr)
-        print('w:{0}, b:{1}'.format(w, b))
-        print('loss is {0}'.format(eval_loss(w, b, x_list, gt_y_list)))
+        if i % 100 == 0:
+            print('w:{0}, b:{1}'.format(w, b))
+            print('loss is {0}'.format(eval_loss(w, b, x_list, gt_y_list)))
 
 def gen_sample_data():
     w = random.randint(0, 10) + random.random()		# for noise random.random[0, 1)
@@ -57,6 +59,9 @@ def gen_sample_data():
         y = w * x + b + random.random() * random.randint(-1, 1)
         x_list.append(x)
         y_list.append(y)
+    plt.figure(1)
+    plt.scatter(x_list, y_list)
+    plt.show()
     return x_list, y_list, w, b
 
 def run():
