@@ -36,8 +36,8 @@ def calc_step_greadient(batch_x_list, gt_y_list, w, b, lr):
     
     dw = sum_dw / batch_size
     db = sum_db / batch_size
-    w += lr * dw
-    b += lr * db
+    w -= lr * dw
+    b -= lr * db
     return w,b
 
 def train(sample_set, label_set, dim, batch_size, lr, max_iter):
@@ -59,18 +59,18 @@ def gen_bmi_data(len):
     positive = []
     negtive = []
     for i in range(len):
-        body_data[i][0] = random.uniform(1.5, 2.4)
-        body_data[i][1] = random.uniform(40, 120)
-        if body_data[i][1] / (body_data[i][0]**2) < 22:
+        body_data[i][0] = random.uniform(1, 10)
+        body_data[i][1] = random.uniform(1, 10)
+        if body_data[i][1] / (body_data[i][0]) > 1:
             body_data[i][2] = 1 
             positive.append([body_data[i][0], body_data[i][1]])
         else:
             negtive.append([body_data[i][0], body_data[i][1]])
 
-    #plt.figure(1)
-    #plt.scatter([i[0] for i in positive], [i[1] for i in positive], marker = "*")
-    #plt.scatter([i[0] for i in negtive], [i[1] for i in negtive], marker = "x")
-    #plt.show()
+    plt.figure(1)
+    plt.scatter([i[0] for i in positive], [i[1] for i in positive], marker = "*")
+    plt.scatter([i[0] for i in negtive], [i[1] for i in negtive], marker = "x")
+    plt.show()
     return body_data
 
 if __name__ == "__main__":
@@ -79,9 +79,23 @@ if __name__ == "__main__":
     sample_set = raw_data[:250, 0:2]
     label_set = raw_data[:250, 2]
     batch_size = 50
-    lr = 0.001
-    max_iter = 10000
+    lr = 0.01
+    max_iter = 1000
     w,b = train(sample_set[:250], label_set[:250], dim, batch_size, lr, max_iter)
+    y_test = []
+    test_set = raw_data[250:500, 0:2]
+    test_label = raw_data[250:500, 2]
+    for i in range(0, 250):
+        prob = inference(w, b, test_set[i, :])
+        if prob > 0.5:
+            y_test.append(1)
+        else:
+            y_test.append(0)
+    correct = 0
+    for i in range(0, 250):
+        if y_test[i] == test_label[i]:
+            correct += 1
+    print("正确率 = {0}", correct / 250)
 
 
 
