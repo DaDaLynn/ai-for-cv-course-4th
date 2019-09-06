@@ -23,6 +23,15 @@ def calc_feat_entropy(Data, feature = "", attr = ""):
         else:
              yes_prob  = yes_count / nSum
              return calc_entropy(yes_prob),nSum / len(Data)
+'''
+def myID3_demo(Data, level = 0, num = 0):
+    node_entropy,1 = calc_feat_entropy(Data)
+    if node_entropy == 1:
+        print("node_{}_{}".format(level, num))
+    else:
+'''
+        
+
 
 if  __name__ == "__main__":
     Data_raw = [['Good', 'Low', 'Older', 'Steady', 'N'],
